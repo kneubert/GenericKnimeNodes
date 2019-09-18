@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.genericworkflownodes.knime.io.listdirimporter;
+package com.genericworkflownodes.knime.nodes.io.listdirimporter;
 
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;

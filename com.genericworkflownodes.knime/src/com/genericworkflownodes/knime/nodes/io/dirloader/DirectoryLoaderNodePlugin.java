@@ -2,7 +2,7 @@
  * $Revision$ $Date$ $Author$
  *
  */
-package com.genericworkflownodes.knime.io.dirloader;
+package com.genericworkflownodes.knime.nodes.io.dirloader;
 
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;

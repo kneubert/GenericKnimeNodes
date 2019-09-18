@@ -1,4 +1,4 @@
-package com.genericworkflownodes.knime.io.dirloader;
+package com.genericworkflownodes.knime.nodes.io.dirloader;
 
 
 import javax.swing.JFileChooser;

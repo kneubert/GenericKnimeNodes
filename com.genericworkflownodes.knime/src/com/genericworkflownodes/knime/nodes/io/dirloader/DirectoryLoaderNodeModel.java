@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2012, Marc Röttig.
+ *
  * This file is part of GenericKnimeNodes.
  * 
  * GenericKnimeNodes is free software: you can redistribute it and/or modify
@@ -14,15 +16,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.genericworkflownodes.knime.io.listdirimporter;
+package com.genericworkflownodes.knime.nodes.io.dirloader;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.knime.core.data.uri.IURIPortObject;
 import org.knime.core.data.uri.URIContent;
 import org.knime.core.data.uri.URIPortObject;
@@ -34,10 +38,13 @@ import org.knime.core.node.InvalidSettingsException;
 import org.knime.core.node.NodeModel;
 import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
-import org.knime.core.node.defaultnodesettings.SettingsModelStringArray;
+import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.core.node.port.PortObject;
 import org.knime.core.node.port.PortObjectSpec;
 import org.knime.core.node.port.PortType;
+
+//import com.genericworkflownodes.knime.base.data.port.IPrefixURIPortObject;
+import com.genericworkflownodes.knime.base.data.port.PrefixURIPortObject;
 
 
 /**
@@ -45,7 +52,7 @@ import org.knime.core.node.port.PortType;
  * 
  * @author roettig, aiche, neubert
  */
-public class ListDirImporterNodeModel extends NodeModel {
+public class DirectoryLoaderNodeModel extends NodeModel {
 
     /**
      * ID for the directoryname configuration.
@@ -55,14 +62,14 @@ public class ListDirImporterNodeModel extends NodeModel {
     /**
      * Model containing the file names and optional extension.
      */
-    private SettingsModelStringArray m_directory_names = new SettingsModelStringArray(
-            ListDirImporterNodeModel.CFG_DIRECTORYNAME, new String[] {});
+    private SettingsModelString m_directory_name = new SettingsModelString(
+            DirectoryLoaderNodeModel.CFG_DIRECTORYNAME, new String());
 
 
     /**
      * Constructor for the node model.
      */
-    protected ListDirImporterNodeModel() {
+    protected DirectoryLoaderNodeModel() {
         super(new PortType[] {}, new PortType[] { IURIPortObject.TYPE });
     }
 
@@ -78,7 +85,7 @@ public class ListDirImporterNodeModel extends NodeModel {
      */
     @Override
     protected void saveSettingsTo(final NodeSettingsWO settings) {
-    	m_directory_names.saveSettingsTo(settings);
+    	m_directory_name.saveSettingsTo(settings);
     }
 
     /**
@@ -87,7 +94,7 @@ public class ListDirImporterNodeModel extends NodeModel {
     @Override
     protected void loadValidatedSettingsFrom(final NodeSettingsRO settings)
             throws InvalidSettingsException {
-    	m_directory_names.loadSettingsFrom(settings);
+    	m_directory_name.loadSettingsFrom(settings);
     }
 
     /**
@@ -97,11 +104,11 @@ public class ListDirImporterNodeModel extends NodeModel {
     protected void validateSettings(final NodeSettingsRO settings)
             throws InvalidSettingsException {
 
-        SettingsModelStringArray tmp_filenames = m_directory_names
+        SettingsModelString tmp_filename = m_directory_name
                 .createCloneWithValidatedValue(settings);
 
-        if (tmp_filenames == null
-                || tmp_filenames.getStringArrayValue().length == 0) {
+        if (tmp_filename == null
+                || tmp_filename.equals("")) {
             throw new InvalidSettingsException("No Files selected.");
         }
 
@@ -134,14 +141,13 @@ public class ListDirImporterNodeModel extends NodeModel {
          * Upon inserting the node into a workflow, it gets configured, so at
          * least something fundamental like the file name should be checked
          */
-        String[] filenames = m_directory_names.getStringArrayValue();
-        if (filenames == null || filenames.length == 0) {
+        String filename = m_directory_name.getStringValue();
+        if (filename == null || filename.equals("")) {
             throw new InvalidSettingsException("No Files selected.");
         }
 
         URIPortObjectSpec uri_spec = null;
         uri_spec = new URIPortObjectSpec("");
-
 
         return new PortObjectSpec[] { uri_spec };
     }
@@ -149,25 +155,62 @@ public class ListDirImporterNodeModel extends NodeModel {
     @Override
     protected PortObject[] execute(PortObject[] inObjects, ExecutionContext exec)
             throws Exception {
-        String[] filenames = m_directory_names.getStringArrayValue();
+    	
+        String filename = m_directory_name.getStringValue();
 
         List<URIContent> uris = new ArrayList<URIContent>();
-        for (String filename : filenames) {
-            File in = new File(convertToURL(filename).toURI());
+
+        File in = new File(convertToURL(filename).toURI());
 
             if (!in.canRead()) {
                 throw new Exception("Cannot read from input file: "
                         + in.getAbsolutePath());
             }
 
-            uris.add(new URIContent(in.toURI(),""));
-           
-        }
+            //uris.add(new URIContent(in.toURI(),""));
+            String prefix = filename;
+            if (filename.contains(".")) {
+                prefix = prefix.split("\\.",2)[0];
+            }  
+  
+            List<File> files_list_ext = listf(filename);
+            
+            if (files_list_ext.isEmpty()) {
+                throw new Exception("Could not find files");
+            }
+            for (File file : files_list_ext) {
+                uris.add(new URIContent(file.toURI(), FilenameUtils.getExtension(file.toString())));
+            }
+            //uris.add(new URIContent(in.toURI(), "")); original
         
-        return new PortObject[] { new URIPortObject(uris) }; 
+     	PrefixURIPortObject uri_prefix_object = null;
+     
+     	uri_prefix_object = new PrefixURIPortObject(uris, prefix);
+  
+    	return new PortObject[] { (URIPortObject) uri_prefix_object };
+        
+        
+      //  return new PortObject[] { new URIPortObject(uris) }; original
     }
 
-    
+    public static List<File> listf(String directoryName) {
+        File directory = new File(directoryName);
+
+        List<File> resultList = new ArrayList<File>();
+
+        // get all the files from a directory
+        File[] fList = directory.listFiles();
+        resultList.addAll(Arrays.asList(fList));
+        for (File file : fList) {
+            if (file.isFile()) {
+                System.out.println(file.getAbsolutePath());
+            } else if (file.isDirectory()) {
+                resultList.addAll(listf(file.getAbsolutePath()));
+            }
+        }
+        //System.out.println(fList);
+        return resultList;
+    } 
     /**
      * Extract a URL from the given String, trying different conversion
      * approaches. Inspired by CSVReaderConfig#loadSettingsInModel().

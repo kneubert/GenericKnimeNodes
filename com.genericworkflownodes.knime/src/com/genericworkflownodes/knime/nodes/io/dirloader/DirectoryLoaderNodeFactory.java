@@ -1,4 +1,4 @@
-package com.genericworkflownodes.knime.io.dirloader;
+package com.genericworkflownodes.knime.nodes.io.dirloader;
 
 import org.knime.core.node.NodeDialogPane;
 import org.knime.core.node.NodeFactory;
