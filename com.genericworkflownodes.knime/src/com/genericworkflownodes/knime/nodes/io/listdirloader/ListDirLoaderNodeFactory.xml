@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE knimeNode PUBLIC "-//UNIKN//DTD KNIME Node 2.0//EN" "http://www.knime.org/Node.dtd">
-<knimeNode icon="listimporter.png" type="Source">
+<knimeNode icon="listdirloader.png" type="Source">
     <name>DIRs Loader</name>
     
     <shortDescription>
-        Locate multiple directories into a Port Object as input for other Generic KNIME nodes.
+        Load multiple directories into a Port Object as input for other Generic KNIME nodes.
     </shortDescription>
     
     <fullDescription>
-          <intro>With this node you can locate a set of directories on your file system that can serve as input
+          <intro>With this node you can load a set of directories on your file system that can serve as input
          for another Generic KNIME Node.</intro>
 
     <option name="Selected Directories">
              The list of directories (full path). 
-         </option>
+    </option>
      
     </fullDescription>
     <ports>
-     <outPort index="0" name="loaded Directories">The list of selected directories</outPort>
+     <outPort index="0" name="Loaded directories [*]">The list of selected directories</outPort>
     </ports>    
 </knimeNode>

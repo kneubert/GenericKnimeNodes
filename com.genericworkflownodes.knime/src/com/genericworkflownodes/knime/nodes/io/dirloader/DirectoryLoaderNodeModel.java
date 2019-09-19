@@ -25,7 +25,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.commons.io.FilenameUtils;
 import org.knime.core.data.uri.IURIPortObject;
 import org.knime.core.data.uri.URIContent;
@@ -43,12 +42,11 @@ import org.knime.core.node.port.PortObject;
 import org.knime.core.node.port.PortObjectSpec;
 import org.knime.core.node.port.PortType;
 
-//import com.genericworkflownodes.knime.base.data.port.IPrefixURIPortObject;
+import com.genericworkflownodes.knime.base.data.port.IPrefixURIPortObject;
 import com.genericworkflownodes.knime.base.data.port.PrefixURIPortObject;
 
-
 /**
- * This is the model implementation of ListDirImporter.
+ * This is the model implementation of DirectoryLoader.
  * 
  * @author roettig, aiche, neubert
  */
@@ -93,7 +91,7 @@ public class DirectoryLoaderNodeModel extends NodeModel {
      */
     @Override
     protected void loadValidatedSettingsFrom(final NodeSettingsRO settings)
-            throws InvalidSettingsException {
+        throws InvalidSettingsException {
     	m_directory_name.loadSettingsFrom(settings);
     }
 
@@ -102,7 +100,7 @@ public class DirectoryLoaderNodeModel extends NodeModel {
      */
     @Override
     protected void validateSettings(final NodeSettingsRO settings)
-            throws InvalidSettingsException {
+        throws InvalidSettingsException {
 
         SettingsModelString tmp_filename = m_directory_name
                 .createCloneWithValidatedValue(settings);
@@ -120,8 +118,8 @@ public class DirectoryLoaderNodeModel extends NodeModel {
      */
     @Override
     protected void loadInternals(final File internDir,
-            final ExecutionMonitor exec) throws IOException,
-            CanceledExecutionException {
+        final ExecutionMonitor exec) throws IOException,
+        CanceledExecutionException {
     }
 
     /**
@@ -129,13 +127,13 @@ public class DirectoryLoaderNodeModel extends NodeModel {
      */
     @Override
     protected void saveInternals(final File internDir,
-            final ExecutionMonitor exec) throws IOException,
-            CanceledExecutionException {
+        final ExecutionMonitor exec) throws IOException,
+           CanceledExecutionException {
     }
 
     @Override
     protected PortObjectSpec[] configure(PortObjectSpec[] inSpecs)
-            throws InvalidSettingsException {
+        throws InvalidSettingsException {
 
         /*
          * Upon inserting the node into a workflow, it gets configured, so at
@@ -155,42 +153,34 @@ public class DirectoryLoaderNodeModel extends NodeModel {
     @Override
     protected PortObject[] execute(PortObject[] inObjects, ExecutionContext exec)
             throws Exception {
-    	
+    	      
         String filename = m_directory_name.getStringValue();
-
         List<URIContent> uris = new ArrayList<URIContent>();
-
         File in = new File(convertToURL(filename).toURI());
-
-            if (!in.canRead()) {
-                throw new Exception("Cannot read from input file: "
-                        + in.getAbsolutePath());
-            }
-
-            //uris.add(new URIContent(in.toURI(),""));
-            String prefix = filename;
-            if (filename.contains(".")) {
-                prefix = prefix.split("\\.",2)[0];
-            }  
-  
-            List<File> files_list_ext = listf(filename);
             
-            if (files_list_ext.isEmpty()) {
-                throw new Exception("Could not find files");
-            }
-            for (File file : files_list_ext) {
-                uris.add(new URIContent(file.toURI(), FilenameUtils.getExtension(file.toString())));
-            }
-            //uris.add(new URIContent(in.toURI(), "")); original
-        
-     	PrefixURIPortObject uri_prefix_object = null;
-     
-     	uri_prefix_object = new PrefixURIPortObject(uris, prefix);
+        if (!in.canRead()) {
+            throw new Exception("Cannot read from input file: "
+                  + in.getAbsolutePath());
+        }
+
+        String prefix = filename;
+        if (filename.contains(".")) {
+            prefix = prefix.split("\\.",2)[0];
+        }  
   
-    	return new PortObject[] { (URIPortObject) uri_prefix_object };
+        List<File> files_list_ext = listf(filename);
+            
+        if (files_list_ext.isEmpty()) {
+            throw new Exception("Could not find files");
+        }
+        for (File file : files_list_ext) {
+            uris.add(new URIContent(file.toURI(), FilenameUtils.getExtension(file.toString())));
+        }
         
-        
-      //  return new PortObject[] { new URIPortObject(uris) }; original
+     	IPrefixURIPortObject uri_prefix_object = null;
+     	uri_prefix_object = new PrefixURIPortObject(uris, prefix);
+     	
+     	return new PortObject[] { (URIPortObject) uri_prefix_object };     	     	
     }
 
     public static List<File> listf(String directoryName) {
@@ -208,9 +198,10 @@ public class DirectoryLoaderNodeModel extends NodeModel {
                 resultList.addAll(listf(file.getAbsolutePath()));
             }
         }
-        //System.out.println(fList);
+
         return resultList;
     } 
+    
     /**
      * Extract a URL from the given String, trying different conversion
      * approaches. Inspired by CSVReaderConfig#loadSettingsInModel().

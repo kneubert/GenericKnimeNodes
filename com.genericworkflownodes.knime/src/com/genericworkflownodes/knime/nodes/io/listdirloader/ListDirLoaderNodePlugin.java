@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.genericworkflownodes.knime.nodes.io.listdirimporter;
+package com.genericworkflownodes.knime.nodes.io.listdirloader;
 
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
@@ -30,14 +30,14 @@ import org.osgi.framework.BundleContext;
  *
  * @author Kerstin Neubert, FU Berlin
  */
-public class ListDirImporterNodePlugin extends Plugin {
+public class ListDirLoaderNodePlugin extends Plugin {
     // The shared instance.
-    private static ListDirImporterNodePlugin plugin;
+    private static ListDirLoaderNodePlugin plugin;
 
     /**
      * The constructor.
      */
-    public ListDirImporterNodePlugin() {
+    public ListDirLoaderNodePlugin() {
         super();
         plugin = this;
     }
@@ -71,7 +71,7 @@ public class ListDirImporterNodePlugin extends Plugin {
      * 
      * @return Singleton instance of the Plugin
      */
-    public static ListDirImporterNodePlugin getDefault() {
+    public static ListDirLoaderNodePlugin getDefault() {
         return plugin;
     }
     

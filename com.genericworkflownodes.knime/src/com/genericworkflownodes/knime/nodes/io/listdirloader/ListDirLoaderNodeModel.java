@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) by GKN team
+ *
  * This file is part of GenericKnimeNodes.
  * 
  * GenericKnimeNodes is free software: you can redistribute it and/or modify
@@ -14,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.genericworkflownodes.knime.nodes.io.listdirimporter;
+package com.genericworkflownodes.knime.nodes.io.listdirloader;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,11 +43,11 @@ import org.knime.core.node.port.PortType;
 
 
 /**
- * This is the model implementation of ListDirImporter.
+ * This is the model implementation of ListDirLoader.
  * 
  * @author roettig, aiche, neubert
  */
-public class ListDirImporterNodeModel extends NodeModel {
+public class ListDirLoaderNodeModel extends NodeModel {
 
     /**
      * ID for the directoryname configuration.
@@ -56,13 +58,13 @@ public class ListDirImporterNodeModel extends NodeModel {
      * Model containing the file names and optional extension.
      */
     private SettingsModelStringArray m_directory_names = new SettingsModelStringArray(
-            ListDirImporterNodeModel.CFG_DIRECTORYNAME, new String[] {});
+            ListDirLoaderNodeModel.CFG_DIRECTORYNAME, new String[] {});
 
 
     /**
      * Constructor for the node model.
      */
-    protected ListDirImporterNodeModel() {
+    protected ListDirLoaderNodeModel() {
         super(new PortType[] {}, new PortType[] { IURIPortObject.TYPE });
     }
 

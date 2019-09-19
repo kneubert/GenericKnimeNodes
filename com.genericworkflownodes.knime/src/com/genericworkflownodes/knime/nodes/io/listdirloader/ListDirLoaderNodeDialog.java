@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) by GKN team
+ *
  * This file is part of GenericKnimeNodes.
  * 
  * GenericKnimeNodes is free software: you can redistribute it and/or modify
@@ -14,13 +16,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.genericworkflownodes.knime.nodes.io.listdirimporter;
+package com.genericworkflownodes.knime.nodes.io.listdirloader;
 
 import org.knime.core.node.defaultnodesettings.DefaultNodeSettingsPane;
 import org.knime.core.node.defaultnodesettings.SettingsModelStringArray;
 
 /**
- * <code>NodeDialog</code> for the "ListMimeFileImporter" Node.
+ * <code>NodeDialog</code> for the "ListDirLoader" Node.
  * 
  * 
  * This node dialog derives from {@link DefaultNodeSettingsPane} which allows
@@ -28,9 +30,9 @@ import org.knime.core.node.defaultnodesettings.SettingsModelStringArray;
  * complex dialog please derive directly from
  * {@link org.knime.core.node.NodeDialogPane}.
  * 
- * @author roettig
+ * @author roettig, neubert
  */
-public class ListDirImporterNodeDialog extends DefaultNodeSettingsPane {
+public class ListDirLoaderNodeDialog extends DefaultNodeSettingsPane {
 
     /**
      * New pane for configuring ListMimeFileImporter node dialog. This is just a
@@ -38,11 +40,11 @@ public class ListDirImporterNodeDialog extends DefaultNodeSettingsPane {
      * 
      * @param obj
      */
-    protected ListDirImporterNodeDialog() {
+    protected ListDirLoaderNodeDialog() {
         super();
         addDialogComponent(new DialogComponentMultiDirChooser(
                 new SettingsModelStringArray(
-                        ListDirImporterNodeModel.CFG_DIRECTORYNAME,
+                        ListDirLoaderNodeModel.CFG_DIRECTORYNAME,
                         new String[] {})));
  
     }

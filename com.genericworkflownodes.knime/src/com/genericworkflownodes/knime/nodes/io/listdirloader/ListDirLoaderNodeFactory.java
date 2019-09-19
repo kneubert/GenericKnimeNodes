@@ -16,27 +16,27 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.genericworkflownodes.knime.nodes.io.listdirimporter;
+package com.genericworkflownodes.knime.nodes.io.listdirloader;
 
 import org.knime.core.node.NodeDialogPane;
 import org.knime.core.node.NodeFactory;
 import org.knime.core.node.NodeView;
 
 /**
- * <code>NodeFactory</code> for the "ListDirImporter" Node.
+ * <code>NodeFactory</code> for the "ListDirLoader" Node.
  * 
  * 
- * @author roettig
+ * @author roettig, neubert
  */
-public class ListDirImporterNodeFactory extends
-        NodeFactory<ListDirImporterNodeModel> {
+public class ListDirLoaderNodeFactory extends
+        NodeFactory<ListDirLoaderNodeModel> {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ListDirImporterNodeModel createNodeModel() {
-        return new ListDirImporterNodeModel();
+    public ListDirLoaderNodeModel createNodeModel() {
+        return new ListDirLoaderNodeModel();
     }
 
     /**
@@ -51,8 +51,8 @@ public class ListDirImporterNodeFactory extends
      * {@inheritDoc}
      */
     @Override
-    public NodeView<ListDirImporterNodeModel> createNodeView(
-            final int viewIndex, final ListDirImporterNodeModel nodeModel) {
+    public NodeView<ListDirLoaderNodeModel> createNodeView(
+            final int viewIndex, final ListDirLoaderNodeModel nodeModel) {
         return null;
     }
 
@@ -69,7 +69,7 @@ public class ListDirImporterNodeFactory extends
      */
     @Override
     public NodeDialogPane createNodeDialogPane() {
-        return new ListDirImporterNodeDialog();
+        return new ListDirLoaderNodeDialog();
     }
 
 }
